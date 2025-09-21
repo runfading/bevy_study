@@ -1,10 +1,13 @@
+use crate::ui_component::button::{
+    button_system, handle_button_clicks, ButtonCallbacks, UiButtonPressed,
+};
 use bevy::color::Color;
 use bevy::prelude::*;
 
-mod button;
+pub mod button;
 
 #[derive(Resource, Clone)]
-pub(crate) struct UiTheme {
+pub struct UiTheme {
     pub bg_color: Color,
     pub text_color: Color,
     pub button_theme: ButtonTheme,
@@ -20,8 +23,8 @@ impl Default for UiTheme {
     }
 }
 
-#[derive(Clone)]
-pub(crate) struct ButtonTheme {
+#[derive(Component, Clone)]
+pub struct ButtonTheme {
     pub border_color: Color,
     pub bg_color: Color,
     pub text_color: Color,
@@ -50,5 +53,17 @@ impl Default for ButtonTheme {
             pressed_border_color: Color::srgb_u8(255, 255, 255),
             pressed_text_color: Color::BLACK,
         }
+    }
+}
+
+pub struct ButtonPlugins;
+
+impl Plugin for ButtonPlugins {
+    fn build(&self, app: &mut App) {
+        app.add_event::<UiButtonPressed>()
+            .insert_resource(UiTheme::default())
+            .insert_resource(ButtonCallbacks::default())
+            .add_systems(Update, button_system)
+            .add_systems(Update, handle_button_clicks);
     }
 }
