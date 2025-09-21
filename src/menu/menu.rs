@@ -64,6 +64,11 @@ pub fn spawn_main_menu(
                             commands.queue(|world: &mut World| {
                                 let mut next = world.resource_mut::<NextState<GameState>>();
                                 next.set(GameState::InGame);
+                                // let mut query = world.query_filtered::<Entity, With<MainMenu>>();
+                                //
+                                // if let Ok(main_menu_entity) = query.single_mut(world) {
+                                //     world.entity_mut(main_menu_entity).despawn();
+                                // }
                             });
                         },
                     );
@@ -101,11 +106,42 @@ pub fn spawn_main_menu(
     info!("主菜单已生成，实体ID: {:?}", menu_entity);
 }
 
+fn despawn_main_menu(mut commands: Commands, query: Query<Entity, With<MainMenu>>) {
+    println!("Despawning main menu...");
+    for entity in query.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
+fn handle_esc_key(
+    mut commands: Commands,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    current_state: Res<State<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    if keyboard_input.just_pressed(KeyCode::Escape) {
+        match current_state.get() {
+            GameState::InGame => {
+                // 从游戏状态按 ESC 返回主菜单
+                next_state.set(GameState::MainMenu);
+                println!("ESC pressed: Returning to Main Menu");
+            }
+            GameState::MainMenu => {
+                // 在主菜单按 ESC 可以退出游戏或其他操作
+                println!("ESC pressed in Main Menu");
+            }
+            _ => {}
+        }
+    }
+}
+
 // 菜单插件
 pub struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::MainMenu), spawn_main_menu);
+        app.add_systems(OnEnter(GameState::MainMenu), spawn_main_menu)
+            .add_systems(OnExit(GameState::MainMenu), despawn_main_menu)
+            .add_systems(Update, handle_esc_key.run_if(in_state(GameState::InGame))); // 添加退出时的清理
     }
 }
