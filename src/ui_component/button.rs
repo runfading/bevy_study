@@ -1,7 +1,10 @@
 use crate::ui_component::{ButtonTheme, UiTheme};
+use bevy::ecs::relationship::RelatedSpawnerCommands;
+use bevy::log;
 use bevy::prelude::*;
 use std::collections::HashMap;
 use std::ops::Add;
+use std::sync::LazyLock;
 
 #[derive(Event)]
 pub struct UiButtonPressed {
@@ -13,19 +16,6 @@ pub struct ButtonCallbacks {
     pub map: HashMap<Entity, Box<dyn FnMut(&mut Commands) + Send + Sync>>,
 }
 
-#[derive(Bundle)]
-pub struct ButtonBundle {
-    pub button: Button,
-    pub node: Node,
-    pub background_color: BackgroundColor,
-    pub border_radius: BorderRadius,
-    pub border_color: BorderColor,
-    pub text: Text,
-    pub text_color: TextColor,
-    pub text_font: TextFont,
-    pub button_theme: ButtonTheme,
-}
-
 #[derive(Component)]
 pub struct GeneralStruct {
     pub label: String,
@@ -34,17 +24,17 @@ pub struct GeneralStruct {
 }
 
 impl GeneralStruct {
-    pub fn new(
-        label: impl Into<String>,
-        font_handler: Handle<Font>,
-        button_theme: ButtonTheme,
-    ) -> Self {
-        Self {
-            label: label.into(),
-            font_handler,
-            button_theme,
-        }
-    }
+    // pub fn new(
+    //     label: impl Into<String>,
+    //     font_handler: Handle<Font>,
+    //     button_theme: ButtonTheme,
+    // ) -> Self {
+    //     Self {
+    //         label: label.into(),
+    //         font_handler,
+    //         button_theme,
+    //     }
+    // }
 
     pub fn from_ui_theme(
         label: impl Into<String>,
@@ -59,38 +49,44 @@ impl GeneralStruct {
     }
 }
 
+// 默认ui theme
+pub static DEFAULT_BUTTON_THEME: LazyLock<UiTheme> = LazyLock::new(|| UiTheme::default());
+
 /// 生成具有给定标签和主题的按钮bundle
 pub fn create_button_bundle(button: GeneralStruct) -> impl Bundle {
     let theme = button.button_theme;
-
-    ButtonBundle {
-        button: Button,
-        node: Node {
+    let text_color = theme.text_color;
+    (
+        Button,
+        Node {
             width: Val::Px(300.0),
             height: Val::Px(50.0),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
+            justify_items: JustifyItems::Center,
             ..default()
         },
-        background_color: BackgroundColor(theme.bg_color),
-        border_radius: BorderRadius::all(Val::Px(5.0)),
-        border_color: BorderColor(theme.border_color),
-        text: Text::new(button.label),
-        text_color: TextColor(theme.text_color),
-        text_font: TextFont::from_font(button.font_handler).with_font_size(24.0),
-        button_theme: theme,
-    }
+        BackgroundColor(theme.bg_color),
+        BorderRadius::all(Val::Px(5.0)),
+        BorderColor(theme.border_color),
+        theme,
+        children![(
+            Text::new(button.label),
+            TextColor(text_color),
+            TextFont::from_font(button.font_handler).with_font_size(24.0),
+        )],
+    )
 }
 
 /// 生成具有给定标签和主题的按钮bundle，直接spawn到world中
 pub fn spawn_button_bundle<F: FnMut(&mut Commands) + Send + Sync + 'static>(
-    commands: &mut Commands,
+    parent_commands: &mut RelatedSpawnerCommands<ChildOf>,
     general_button: GeneralStruct,
     callbacks: &mut ButtonCallbacks,
     callback: F,
 ) -> Entity {
     let bundle = create_button_bundle(general_button);
-    let button_entity = commands.spawn(bundle).id();
+    let button_entity = parent_commands.spawn(bundle).id();
 
     callbacks.map.insert(button_entity, Box::new(callback));
     button_entity
@@ -103,37 +99,44 @@ pub fn button_system(
             &Interaction,
             &mut BackgroundColor,
             &mut BorderColor,
-            &mut Text,
-            &mut TextColor,
+            &mut Children,
         ),
         (Changed<Interaction>, With<Button>),
     >,
-    theme: Res<UiTheme>,
+    theme: Option<Res<UiTheme>>,
     mut button_pressed_event: EventWriter<UiButtonPressed>,
+    mut text_query: Query<&mut Text>,
+    mut color_query: Query<&mut TextColor>,
 ) {
-    let theme = &theme.button_theme;
-    for (entity, interaction, mut background_color, mut border_color, mut text, mut text_color) in
+    let theme = theme
+        .as_ref()
+        .map(|theme| theme.button_theme())
+        .unwrap_or(&DEFAULT_BUTTON_THEME.button_theme);
+
+    for (entity, interaction, mut background_color, mut border_color, mut children) in
         &mut interaction_query
     {
+        let mut text = text_query.get_mut(children[0]).unwrap();
+        let mut text_color = color_query.get_mut(children[0]).unwrap();
+
         match interaction {
             Interaction::Pressed => {
                 *background_color = BackgroundColor(theme.pressed_bg_color);
                 *text_color = TextColor(theme.pressed_text_color);
                 *border_color = BorderColor(theme.pressed_border_color);
-                text.0 = text.0.replace(" hover", "").add(" pressed");
                 button_pressed_event.write(UiButtonPressed { entity });
+                info!("Button pressed: {:?}", text);
             }
             Interaction::Hovered => {
                 *background_color = BackgroundColor(theme.hover_bg_color);
                 *text_color = TextColor(theme.hover_text_color);
                 *border_color = BorderColor(theme.hover_border_color);
-                text.0 = text.0.replace(" pressed", "").add(" hover");
+                info!("Button hover: {:?}", text);
             }
             Interaction::None => {
                 *background_color = BackgroundColor(theme.bg_color);
                 *text_color = TextColor(theme.text_color);
                 *border_color = BorderColor(theme.border_color);
-                text.0 = text.0.replace(" pressed", "").replace(" hover", "");
             }
         }
     }

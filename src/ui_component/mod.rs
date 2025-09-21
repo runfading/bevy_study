@@ -23,6 +23,12 @@ impl Default for UiTheme {
     }
 }
 
+impl UiTheme {
+    pub fn button_theme(&self) -> &ButtonTheme {
+        &self.button_theme
+    }
+}
+
 #[derive(Component, Clone)]
 pub struct ButtonTheme {
     pub border_color: Color,
@@ -61,9 +67,7 @@ pub struct ButtonPlugins;
 impl Plugin for ButtonPlugins {
     fn build(&self, app: &mut App) {
         app.add_event::<UiButtonPressed>()
-            .insert_resource(UiTheme::default())
             .insert_resource(ButtonCallbacks::default())
-            .add_systems(Update, button_system)
-            .add_systems(Update, handle_button_clicks);
+            .add_systems(Update, (button_system, handle_button_clicks));
     }
 }
