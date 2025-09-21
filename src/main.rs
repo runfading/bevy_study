@@ -4,6 +4,7 @@ use bevy::app::Startup;
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
 
+mod game;
 mod menu;
 mod ui_component;
 
@@ -18,6 +19,7 @@ fn main() {
         .add_systems(Startup, |mut commands: Commands| {
             commands.spawn(Camera2d);
         })
+        .add_systems(OnEnter(GameState::InGame), || info!("进入游戏状态"))
         .add_plugins(ButtonPlugins)
         .add_plugins(MenuPlugin)
         .run();

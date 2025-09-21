@@ -58,9 +58,13 @@ pub fn spawn_main_menu(
                         button_parent,
                         start_button,
                         &mut button_callbacks,
-                        |_commands| {
+                        |commands| {
                             info!("开始游戏按钮被点击");
                             // 这里添加开始游戏的逻辑
+                            commands.queue(|world: &mut World| {
+                                let mut next = world.resource_mut::<NextState<GameState>>();
+                                next.set(GameState::InGame);
+                            });
                         },
                     );
 
