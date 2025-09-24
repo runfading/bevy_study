@@ -4,6 +4,7 @@ use crate::ui_component::{
     UiTheme,
 };
 use crate::GameState;
+use bevy::asset::AssetContainer;
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -14,7 +15,14 @@ pub fn spawn_main_menu(
     asset_server: Res<AssetServer>,
     ui_theme: Option<Res<UiTheme>>,
     mut button_callbacks: ResMut<ButtonCallbacks>,
+    mut query: Query<Entity, With<MainMenu>>,
 ) {
+    // 查看主菜单是否已经生成了，已经生成改为可见
+    if let Ok(entity) = query.single_mut() {
+        commands.entity(entity).insert(Visibility::Visible);
+        return;
+    }
+
     let ui_theme = ui_theme
         .as_ref()
         .map(|theme| theme.as_ref())
@@ -109,12 +117,11 @@ pub fn spawn_main_menu(
 fn despawn_main_menu(mut commands: Commands, query: Query<Entity, With<MainMenu>>) {
     println!("Despawning main menu...");
     for entity in query.iter() {
-        commands.entity(entity).despawn();
+        commands.entity(entity).insert(Visibility::Hidden);
     }
 }
 
 fn handle_esc_key(
-    mut commands: Commands,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     current_state: Res<State<GameState>>,
     mut next_state: ResMut<NextState<GameState>>,

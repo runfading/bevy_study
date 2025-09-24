@@ -1,3 +1,4 @@
+use crate::game::GamePlugin;
 use crate::menu::menu::MenuPlugin;
 use crate::ui_component::{ButtonPlugins, UiTheme};
 use bevy::app::Startup;
@@ -22,6 +23,7 @@ fn main() {
         .add_systems(OnEnter(GameState::InGame), || info!("进入游戏状态"))
         .add_plugins(ButtonPlugins)
         .add_plugins(MenuPlugin)
+        .add_plugins(GamePlugin)
         .run();
 }
 
