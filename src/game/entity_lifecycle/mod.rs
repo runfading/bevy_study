@@ -21,7 +21,7 @@ impl Default for Speed {
     fn default() -> Self {
         Self {
             acceleration: 3.0,
-            initial_speed: 5.0,
+            initial_speed: 8.0,
         }
     }
 }

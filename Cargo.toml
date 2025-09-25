@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 bevy = "0.16.1"
+rand = "0.8.5"
+log = "0.4.28"

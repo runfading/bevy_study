@@ -9,7 +9,7 @@ pub(super) fn spawn_or_reset_ball(
 ) {
     commands.spawn((
         Ball,
-        Mesh3d(meshes.add(Sphere::new(1.))),
+        Mesh3d(meshes.add(Sphere::new(2.))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::WHITE,
             ..Default::default()

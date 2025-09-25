@@ -18,7 +18,7 @@ impl Plugin for CameraPlugin {
                     shadows_enabled: true,
                     ..default()
                 },
-                Transform::from_translation(Vec3::new(4.0, 8.0, 4.0)),
+                Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
             ));
         });
     }
