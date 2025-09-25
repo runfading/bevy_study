@@ -1,9 +1,7 @@
 use crate::ui_component::{ButtonTheme, UiTheme};
 use bevy::ecs::relationship::RelatedSpawnerCommands;
-use bevy::log;
 use bevy::prelude::*;
 use std::collections::HashMap;
-use std::ops::Add;
 use std::sync::LazyLock;
 
 #[derive(Event)]
@@ -113,10 +111,10 @@ pub fn button_system(
         .map(|theme| theme.button_theme())
         .unwrap_or(&DEFAULT_BUTTON_THEME.button_theme);
 
-    for (entity, interaction, mut background_color, mut border_color, mut children) in
+    for (entity, interaction, mut background_color, mut border_color, children) in
         &mut interaction_query
     {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let text = text_query.get_mut(children[0]).unwrap();
         let mut text_color = color_query.get_mut(children[0]).unwrap();
 
         match interaction {

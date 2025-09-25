@@ -4,7 +4,6 @@ use crate::ui_component::{
     UiTheme,
 };
 use crate::GameState;
-use bevy::asset::AssetContainer;
 use bevy::prelude::*;
 
 #[derive(Component)]

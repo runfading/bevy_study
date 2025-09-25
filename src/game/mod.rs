@@ -1,16 +1,12 @@
 mod action;
-mod camera;
-mod entity;
+mod entity_lifecycle;
+mod window;
 
-use crate::ui_component::UiTheme;
-use crate::GameState;
+use crate::game::action::MovementPlugin;
+use crate::game::entity_lifecycle::LifecyclePlugin;
+use crate::game::window::WindowPlugin;
 use bevy::app::App;
-use bevy::asset::AssetContainer;
-use bevy::color::Color;
-use bevy::prelude::{
-    default, BackgroundColor, ClearColor, Commands, Component, Entity, Node, OnEnter, OnExit, Plugin,
-    Query, Res, ResMut, Val, Visibility, With,
-};
+use bevy::prelude::{Component, Plugin};
 
 #[derive(Component)]
 pub struct GameScene;
@@ -19,48 +15,8 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            OnEnter(GameState::InGame),
-            (setup_game_background, spawn_game_main_scene),
-        )
-        .add_systems(
-            OnExit(GameState::InGame),
-            (restore_menu_background, hide_spawn_game_main_scene),
-        );
-    }
-}
-
-fn setup_game_background(mut clear_color: ResMut<ClearColor>, theme: Res<UiTheme>) {
-    // 设置游戏状态下的窗口背景色为黑色
-    clear_color.0 = Color::BLACK;
-}
-
-fn restore_menu_background(mut clear_color: ResMut<ClearColor>, ui_theme: Res<UiTheme>) {
-    // 退出游戏状态时恢复菜单的背景色
-    clear_color.0 = ui_theme.bg_color;
-}
-
-fn spawn_game_main_scene(mut commands: Commands, mut query: Query<Entity, With<GameScene>>) {
-    if let Ok(entity) = query.single_mut() {
-        commands.entity(entity).insert(Visibility::Visible);
-        return;
-    }
-
-    commands.spawn((
-        Node {
-            width: Val::Auto,  // 占窗口宽度80%
-            height: Val::Auto, // 占窗口高度80%
-            ..default()
-        },
-        // 透明色
-        BackgroundColor(Color::NONE),
-        GameScene,
-    ));
-}
-
-fn hide_spawn_game_main_scene(mut commands: Commands, mut query: Query<Entity, With<GameScene>>) {
-    if let Ok(entity) = query.single_mut() {
-        commands.entity(entity).insert(Visibility::Hidden);
-        return;
+        app.add_plugins(WindowPlugin)
+            .add_plugins(LifecyclePlugin)
+            .add_plugins(MovementPlugin);
     }
 }
