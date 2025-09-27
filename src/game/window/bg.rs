@@ -2,7 +2,6 @@ use crate::game::window::Star;
 use crate::game::GameScene;
 use crate::ui_component::UiTheme;
 use bevy::asset::Assets;
-use bevy::color;
 use bevy::color::Color;
 use bevy::prelude::*;
 use rand::Rng;

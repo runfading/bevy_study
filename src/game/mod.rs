@@ -1,6 +1,7 @@
 mod action;
 mod entity_lifecycle;
 mod window;
+mod camera;
 
 use crate::game::action::MovementPlugin;
 use crate::game::entity_lifecycle::LifecyclePlugin;

@@ -1,5 +1,5 @@
-use bevy::prelude::{Commands, Entity, Query, Visibility, With};
 use crate::game::entity_lifecycle::Ball;
+use bevy::prelude::{Commands, Entity, Query, Visibility, With};
 
 /// 隐藏实体
 pub(super) fn despawn_ball(mut commands: Commands, mut query: Query<Entity, With<Ball>>) {
