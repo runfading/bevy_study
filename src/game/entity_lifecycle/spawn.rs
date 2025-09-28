@@ -6,7 +6,14 @@ pub(super) fn spawn_or_reset_ball(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut query: Query<(Entity, &mut Transform), With<Ball>>,
 ) {
+    if let Ok((ball_entity, mut transform)) = query.single_mut() {
+        commands.entity(ball_entity).insert(Visibility::Visible);
+        *transform = Transform::from_xyz(0., 0., 0.);
+        return;
+    }
+
     commands.spawn((
         Ball,
         Mesh3d(meshes.add(Sphere::new(2.))),

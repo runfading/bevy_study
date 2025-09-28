@@ -2,8 +2,8 @@ use crate::camera::CameraPlugin;
 use crate::game::GamePlugin;
 use crate::menu::menu::MenuPlugin;
 use crate::ui_component::{ButtonPlugins, UiTheme};
-use bevy::prelude::*;
 use bevy::DefaultPlugins;
+use bevy::prelude::*;
 
 mod camera;
 mod game;

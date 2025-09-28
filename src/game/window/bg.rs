@@ -1,4 +1,4 @@
-use crate::game::window::Star;
+use crate::game::window::{Star, StarDrift};
 use crate::game::GameScene;
 use crate::ui_component::UiTheme;
 use bevy::asset::Assets;
@@ -11,10 +11,8 @@ pub(super) fn setup_game_background(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut clear_color: ResMut<ClearColor>,
-    _theme: Res<UiTheme>,
     mut query: Query<Entity, With<Star>>,
 ) {
-    // 设置游戏状态下的窗口背景色为黑色
     clear_color.0 = Color::BLACK;
 
     if !query.is_empty() {
@@ -25,15 +23,17 @@ pub(super) fn setup_game_background(
         return;
     }
 
-    let num_stars = 500; // 星星数量
-
+    let num_stars = 500;
     let mut rng = rand::thread_rng();
 
     for _ in 0..num_stars {
         let x = rng.gen_range(-100.0..100.0);
         let y = rng.gen_range(-100.0..100.0);
-        let z = rng.gen_range(-10.0..0.); // 3D 深度感
+        let z = rng.gen_range(-10.0..0.0);
         let size = rng.gen_range(0.01..0.15);
+
+        // 星星随机缓慢漂浮速度
+        let drift = Vec2::new(rng.gen_range(-0.2..0.2), rng.gen_range(-0.2..0.2));
 
         commands.spawn((
             Mesh3d(meshes.add(Circle::new(size))),
@@ -44,10 +44,58 @@ pub(super) fn setup_game_background(
             })),
             Transform::from_xyz(x, y, z),
             Star,
+            StarDrift { velocity: drift },
         ));
     }
 
     info!("生成星空背景成功");
+}
+
+/// 星星无限平铺
+pub(super) fn wrap_stars_around_camera(
+    camera_query: Query<&Transform, (With<Camera3d>, Without<Star>)>,
+    mut star_query: Query<&mut Transform, With<Star>>,
+) {
+    let Ok(camera_transform) = camera_query.single() else {
+        return;
+    };
+
+    let cam_x = camera_transform.translation.x;
+    let cam_y = camera_transform.translation.y;
+    let bounds = 100.0; // ⬅️ 改大一些
+
+    for mut transform in &mut star_query {
+        let mut pos = transform.translation;
+
+        // X wrap
+        if pos.x < cam_x - bounds {
+            pos.x += bounds * 2.0;
+        } else if pos.x > cam_x + bounds {
+            pos.x -= bounds * 2.0;
+        }
+
+        // Y wrap
+        if pos.y < cam_y - bounds {
+            pos.y += bounds * 2.0;
+        } else if pos.y > cam_y + bounds {
+            pos.y -= bounds * 2.0;
+        }
+
+        transform.translation = pos;
+    }
+}
+
+/// 星星缓慢漂浮
+pub(super) fn drift_stars(
+    time: Res<Time>,
+    mut query: Query<(&mut Transform, &StarDrift), With<Star>>,
+) {
+    let delta = time.delta_secs();
+
+    for (mut transform, drift) in &mut query {
+        transform.translation.x += drift.velocity.x * delta;
+        transform.translation.y += drift.velocity.y * delta;
+    }
 }
 
 pub(super) fn restore_menu_background(mut clear_color: ResMut<ClearColor>, ui_theme: Res<UiTheme>) {

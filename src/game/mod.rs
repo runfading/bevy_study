@@ -1,9 +1,10 @@
 mod action;
+mod camera;
 mod entity_lifecycle;
 mod window;
-mod camera;
 
 use crate::game::action::MovementPlugin;
+use crate::game::camera::GameCameraPlugin;
 use crate::game::entity_lifecycle::LifecyclePlugin;
 use crate::game::window::WindowPlugin;
 use bevy::app::App;
@@ -18,6 +19,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(WindowPlugin)
             .add_plugins(LifecyclePlugin)
-            .add_plugins(MovementPlugin);
+            .add_plugins(MovementPlugin)
+            .add_plugins(GameCameraPlugin);
     }
 }

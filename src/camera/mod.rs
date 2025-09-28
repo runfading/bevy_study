@@ -1,7 +1,9 @@
 use bevy::app::App;
 use bevy::math::Vec3;
 use bevy::pbr::PointLight;
-use bevy::prelude::{default, Camera3d, Commands, Plugin, Startup, Transform};
+use bevy::prelude::{
+    default, Camera3d, Commands, Plugin, Startup, Transform,
+};
 
 pub(crate) struct CameraPlugin;
 

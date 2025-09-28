@@ -20,8 +20,8 @@ pub struct Speed {
 impl Default for Speed {
     fn default() -> Self {
         Self {
-            acceleration: 3.0,
-            initial_speed: 8.0,
+            acceleration: 10.0,
+            initial_speed: 20.0,
         }
     }
 }

@@ -6,7 +6,6 @@ pub(super) fn movement(
     mut query: Query<(&mut Transform, &Speed), With<Ball>>, // 注意：Speed 不需要 mut，除非你改它
     keyboard_input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
-    mut camera_query: Query<&mut Transform, (With<Camera3d>, Without<Ball>)>,
 ) {
     let (mut transform, speed) = if let Ok(entity) = query.single_mut() {
         entity
@@ -48,9 +47,5 @@ pub(super) fn movement(
     // 应用移动
     let move_vec = direction * current_speed * delta;
     transform.translation += move_vec;
-
-    if let Ok(mut camera) = camera_query.single_mut() {
-        camera.translation += move_vec;
-        *camera = camera.looking_at(transform.translation, Vec3::Y);
-    }
+    log::info!("小球坐标{:?}", transform);
 }
