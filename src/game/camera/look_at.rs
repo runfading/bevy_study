@@ -6,7 +6,7 @@ pub(super) fn camera_follow_ball(
     mut ball_transforms: Query<&Transform, With<Ball>>,
     time: Res<Time>,
 ) {
-    let delta = time.delta_secs();
+    let _delta = time.delta_secs();
 
     let ball_transform = match ball_transforms.single_mut() {
         Ok(ball_transform) => ball_transform,
@@ -27,9 +27,11 @@ pub(super) fn camera_follow_ball(
     let camera_position = camera.translation;
 
     // lerp是平滑移动，当前场景可以去掉，因为小球是每帧移动，相机也是每帧更新
-    let new_x = camera_position.x.lerp(target_position.x, delta);
-    let new_y = camera_position.y.lerp(target_position.y, delta);
+    // let new_x = camera_position.x.lerp(target_position.x, delta);
+    // let new_y = camera_position.y.lerp(target_position.y, delta);
+    let new_x = target_position.x;
+    let new_z = target_position.z;
 
-    camera.translation = Vec3::new(new_x, new_y, camera_position.z);
-    *camera = camera.looking_at(target_position, Vec3::Y);
+    camera.translation = Vec3::new(new_x, camera_position.y, new_z);
+    *camera = camera.looking_at(target_position, Vec3::Z);
 }

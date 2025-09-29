@@ -1,3 +1,4 @@
+use crate::asset_loader::FontAssets;
 use crate::ui_component::button::DEFAULT_BUTTON_THEME;
 use crate::ui_component::{
     button::{spawn_button_bundle, ButtonCallbacks, GeneralStruct},
@@ -11,7 +12,7 @@ pub struct MainMenu;
 
 pub fn spawn_main_menu(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    asset_server: Res<FontAssets>,
     ui_theme: Option<Res<UiTheme>>,
     mut button_callbacks: ResMut<ButtonCallbacks>,
     mut query: Query<Entity, With<MainMenu>>,
@@ -26,7 +27,7 @@ pub fn spawn_main_menu(
         .as_ref()
         .map(|theme| theme.as_ref())
         .unwrap_or(&DEFAULT_BUTTON_THEME);
-    let font_handle = asset_server.load("fonts/LXGWWenKaiMono-Medium.ttf");
+    let font_handle = asset_server.fonts.clone();
 
     // 创建主菜单容器
     let menu_entity = commands
@@ -113,14 +114,14 @@ pub fn spawn_main_menu(
     info!("主菜单已生成，实体ID: {:?}", menu_entity);
 }
 
-fn despawn_main_menu(mut commands: Commands, query: Query<Entity, With<MainMenu>>) {
+pub(crate) fn despawn_main_menu(mut commands: Commands, query: Query<Entity, With<MainMenu>>) {
     println!("Despawning main menu...");
     for entity in query.iter() {
         commands.entity(entity).insert(Visibility::Hidden);
     }
 }
 
-fn handle_esc_key(
+pub(crate) fn handle_esc_key(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     current_state: Res<State<GameState>>,
     mut next_state: ResMut<NextState<GameState>>,
@@ -138,16 +139,5 @@ fn handle_esc_key(
             }
             _ => {}
         }
-    }
-}
-
-// 菜单插件
-pub struct MenuPlugin;
-
-impl Plugin for MenuPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::MainMenu), spawn_main_menu)
-            .add_systems(OnExit(GameState::MainMenu), despawn_main_menu)
-            .add_systems(Update, handle_esc_key.run_if(in_state(GameState::InGame))); // 添加退出时的清理
     }
 }

@@ -15,6 +15,8 @@ pub struct Speed {
     pub acceleration: f32,
     // 每秒移动的距离
     pub initial_speed: f32,
+    //旋转速度
+    pub rotation_speed: f32,
 }
 
 impl Default for Speed {
@@ -22,6 +24,7 @@ impl Default for Speed {
         Self {
             acceleration: 10.0,
             initial_speed: 20.0,
+            rotation_speed: 10.0,
         }
     }
 }

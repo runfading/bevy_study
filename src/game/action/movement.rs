@@ -18,16 +18,16 @@ pub(super) fn movement(
 
     // 收集输入方向（用 1.0，不是 initial_speed）
     if keyboard_input.pressed(KeyCode::KeyW) || keyboard_input.pressed(KeyCode::ArrowUp) {
-        direction.y += 1.0;
+        direction.z += 1.0;
     }
     if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown) {
-        direction.y -= 1.0;
+        direction.z -= 1.0;
     }
     if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
-        direction.x -= 1.0;
+        direction.x += 1.0;
     }
     if keyboard_input.pressed(KeyCode::KeyD) || keyboard_input.pressed(KeyCode::ArrowRight) {
-        direction.x += 1.0;
+        direction.x -= 1.0;
     }
 
     // 归一化方向

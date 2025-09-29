@@ -1,9 +1,6 @@
 use bevy::app::App;
 use bevy::math::Vec3;
-use bevy::pbr::PointLight;
-use bevy::prelude::{
-    default, Camera3d, Commands, Plugin, Startup, Transform,
-};
+use bevy::prelude::{default, Camera3d, Commands, DirectionalLight, Plugin, Startup, Transform};
 
 pub(crate) struct CameraPlugin;
 
@@ -12,16 +9,13 @@ impl Plugin for CameraPlugin {
         app.add_systems(Startup, |mut commands: Commands| {
             commands.spawn((
                 Camera3d::default(),
-                Transform::from_translation(Vec3::new(0.0, 0.0, 100.0))
-                    .looking_at(Vec3::ZERO, Vec3::Y),
+                Transform::from_translation(Vec3::new(0.0, 100.0, 0.0))
+                    .looking_at(Vec3::ZERO, Vec3::Z),
             ));
-            commands.spawn((
-                PointLight {
-                    shadows_enabled: true,
-                    ..default()
-                },
-                Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
-            ));
+            commands.spawn(DirectionalLight {
+                illuminance: 400.0,
+                ..default()
+            });
         });
     }
 }

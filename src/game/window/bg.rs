@@ -3,6 +3,7 @@ use crate::game::GameScene;
 use crate::ui_component::UiTheme;
 use bevy::asset::Assets;
 use bevy::color::Color;
+use bevy::core_pipeline::bloom::Bloom;
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -23,13 +24,13 @@ pub(super) fn setup_game_background(
         return;
     }
 
-    let num_stars = 500;
+    let num_stars = 100;
     let mut rng = rand::thread_rng();
 
     for _ in 0..num_stars {
-        let x = rng.gen_range(-100.0..100.0);
-        let y = rng.gen_range(-100.0..100.0);
-        let z = rng.gen_range(-10.0..0.0);
+        let x = rng.gen_range(-75.0..75.0);
+        let y = rng.gen_range(-10.0..0.0);
+        let z = rng.gen_range(-75.0..75.0);
         let size = rng.gen_range(0.01..0.15);
 
         // 星星随机缓慢漂浮速度
@@ -42,9 +43,10 @@ pub(super) fn setup_game_background(
                 emissive: LinearRgba::WHITE,
                 ..Default::default()
             })),
-            Transform::from_xyz(x, y, z),
+            Transform::from_xyz(x, y, z).with_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
             Star,
             StarDrift { velocity: drift },
+            Bloom::NATURAL,
         ));
     }
 
@@ -61,8 +63,8 @@ pub(super) fn wrap_stars_around_camera(
     };
 
     let cam_x = camera_transform.translation.x;
-    let cam_y = camera_transform.translation.y;
-    let bounds = 100.0; // ⬅️ 改大一些
+    let cam_z = camera_transform.translation.z;
+    let bounds = 70.0;
 
     for mut transform in &mut star_query {
         let mut pos = transform.translation;
@@ -75,10 +77,10 @@ pub(super) fn wrap_stars_around_camera(
         }
 
         // Y wrap
-        if pos.y < cam_y - bounds {
-            pos.y += bounds * 2.0;
-        } else if pos.y > cam_y + bounds {
-            pos.y -= bounds * 2.0;
+        if pos.z < cam_z - bounds {
+            pos.z += bounds * 2.0;
+        } else if pos.z > cam_z + bounds {
+            pos.z -= bounds * 2.0;
         }
 
         transform.translation = pos;
