@@ -3,7 +3,6 @@ use crate::game::GameScene;
 use crate::ui_component::UiTheme;
 use bevy::asset::Assets;
 use bevy::color::Color;
-use bevy::core_pipeline::bloom::Bloom;
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -28,13 +27,13 @@ pub(super) fn setup_game_background(
     let mut rng = rand::thread_rng();
 
     for _ in 0..num_stars {
-        let x = rng.gen_range(-75.0..75.0);
-        let y = rng.gen_range(-10.0..0.0);
-        let z = rng.gen_range(-75.0..75.0);
-        let size = rng.gen_range(0.01..0.15);
+        let x = rng.random_range(-75.0..75.0);
+        let y = rng.random_range(-10.0..0.0);
+        let z = rng.random_range(-75.0..75.0);
+        let size = rng.random_range(0.01..0.15);
 
         // 星星随机缓慢漂浮速度
-        let drift = Vec2::new(rng.gen_range(-0.2..0.2), rng.gen_range(-0.2..0.2));
+        let drift = Vec2::new(rng.random_range(-0.2..0.2), rng.random_range(-0.2..0.2));
 
         commands.spawn((
             Mesh3d(meshes.add(Circle::new(size))),
@@ -46,7 +45,6 @@ pub(super) fn setup_game_background(
             Transform::from_xyz(x, y, z).with_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
             Star,
             StarDrift { velocity: drift },
-            Bloom::NATURAL,
         ));
     }
 

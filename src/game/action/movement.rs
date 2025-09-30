@@ -2,6 +2,9 @@ use crate::game::entity_lifecycle::{Ball, Speed};
 use bevy::input::ButtonInput;
 use bevy::prelude::*;
 
+#[derive(Component)]
+pub(super) struct MovementAction;
+
 pub(super) fn movement(
     mut query: Query<(&mut Transform, &Speed), With<Ball>>, // 注意：Speed 不需要 mut，除非你改它
     keyboard_input: Res<ButtonInput<KeyCode>>,

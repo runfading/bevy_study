@@ -19,22 +19,19 @@ pub(super) fn zoom_camera(
             let zoom_delta = total_delta * zoom_speed;
 
             // 限制相机的最小和最大距离
-            let min_distance = 5.0;
+            let min_distance = 50.0;
             let max_distance = 200.0;
 
             // 获取当前相机位置
             let current_position = transform.translation;
-            let distance_from_origin = current_position.length();
+            let distance_from_origin = current_position.y;
 
             // 计算新的距离
             let new_distance =
                 (distance_from_origin - zoom_delta).clamp(min_distance, max_distance);
 
-            // 如果距离发生了变化，更新相机位置
-            if (new_distance - distance_from_origin).abs() > 0.01 {
-                let direction = current_position.normalize();
-                transform.translation = direction * new_distance;
-            }
+            // 更新相机位置
+            transform.translation.y = new_distance;
         }
     }
 }

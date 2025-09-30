@@ -1,12 +1,13 @@
 use crate::GameState;
 use bevy::asset::LoadState;
+use bevy::ecs::error::info;
 use bevy::prelude::*;
 
 #[derive(Resource, Debug, Default)]
 pub struct SceneAssets {
-    pub asteroid: Handle<Gltf>,
-    pub spaceship: Handle<Gltf>,
-    pub missiles: Handle<Gltf>,
+    pub asteroid: Handle<Scene>,
+    pub spaceship: Handle<Scene>,
+    pub missiles: Handle<Scene>,
 }
 
 #[derive(Resource, Debug, Default)]
@@ -16,7 +17,7 @@ pub struct FontAssets {
 
 #[derive(Resource, Debug, Default)]
 pub struct AssetsLoading {
-    pub scenes: Vec<Handle<Gltf>>,
+    pub scenes: Vec<Handle<Scene>>,
     pub fonts: Vec<Handle<Font>>,
 }
 
@@ -43,9 +44,9 @@ fn load_assets(
 ) {
     // 模型
     *scene_assets = SceneAssets {
-        asteroid: asset_server.load("models/Asteroid.glb"),
-        spaceship: asset_server.load("models/Spaceship.glb"),
-        missiles: asset_server.load("models/Missiles.glb"),
+        asteroid: asset_server.load(GltfAssetLabel::Scene(0).from_asset("models/Asteroid.glb")),
+        spaceship: asset_server.load(GltfAssetLabel::Scene(0).from_asset("models/Spaceship.glb")),
+        missiles: asset_server.load(GltfAssetLabel::Scene(0).from_asset("models/Missiles.glb")),
     };
 
     // 字体
@@ -71,7 +72,10 @@ fn check_assets_loaded(
     loading
         .scenes
         .retain(|handle| match asset_server.get_load_state(handle) {
-            Some(LoadState::Loaded) => false,
+            Some(LoadState::Loaded) => {
+                info!("Loaded scene asset: {:?}", handle);
+                false
+            }
             Some(LoadState::Failed(err)) => {
                 error!("Failed to load scene asset: {:?}", err);
                 false
