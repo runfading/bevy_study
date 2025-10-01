@@ -1,12 +1,12 @@
-use crate::asset_loader::AssetLoaderPlugin;
 use crate::camera::CameraPlugin;
 use crate::game::GamePlugin;
 use crate::menu::MenuPlugin;
 use crate::ui_component::{ButtonPlugins, UiTheme};
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
+use crate::assets::AssetLoaderPlugin;
 
-mod asset_loader;
+mod assets;
 mod camera;
 mod game;
 mod menu;

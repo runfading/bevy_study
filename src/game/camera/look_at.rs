@@ -1,9 +1,9 @@
-use crate::game::entity_lifecycle::Ball;
+use crate::game::entity_lifecycle::Mario;
 use bevy::prelude::*;
 
 pub(super) fn camera_follow_ball(
-    mut camera_query: Query<&mut Transform, (With<Camera3d>, Without<Ball>)>,
-    mut ball_transforms: Query<&Transform, With<Ball>>,
+    mut camera_query: Query<&mut Transform, (With<Camera3d>, Without<Mario>)>,
+    mut ball_transforms: Query<&Transform, With<Mario>>,
     time: Res<Time>,
 ) {
     let _delta = time.delta_secs();

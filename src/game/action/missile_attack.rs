@@ -1,4 +1,3 @@
-use crate::asset_loader::SceneAssets;
 use crate::game::action::AttackAction;
 use crate::GameState;
 use bevy::prelude::*;
@@ -33,7 +32,6 @@ fn missile_attack(
     mut commands: Commands,
     mut query: Query<(&Transform, &Missile), (With<AttackAction>, With<Missile>)>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    scene_assets: Res<SceneAssets>,
 ) {
     if keyboard_input.just_pressed(KeyCode::KeyQ) {
         query.iter().for_each(|(transform, missile)| {
@@ -53,7 +51,6 @@ fn missile_attack(
                 MissileAction {
                     direction: velocity, // 保存速度向量
                 },
-                SceneRoot(scene_assets.missiles.clone()),
                 Transform::from_translation(spawn_position),
             ));
         });

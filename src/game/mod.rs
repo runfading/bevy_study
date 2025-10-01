@@ -4,9 +4,7 @@ mod entity_lifecycle;
 mod window;
 
 use crate::game::action::MovementPlugin;
-use crate::game::camera::GameCameraPlugin;
 use crate::game::entity_lifecycle::LifecyclePlugin;
-use crate::game::window::WindowPlugin;
 use bevy::app::App;
 use bevy::prelude::{Component, Plugin};
 
@@ -17,9 +15,11 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(WindowPlugin)
+        app
+            // .add_plugins(WindowPlugin)
             .add_plugins(LifecyclePlugin)
             .add_plugins(MovementPlugin)
-            .add_plugins(GameCameraPlugin);
+            // .add_plugins(GameCameraPlugin)
+        ;
     }
 }

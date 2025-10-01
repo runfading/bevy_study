@@ -7,7 +7,7 @@ use crate::GameState;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct Ball;
+pub struct Mario;
 
 #[derive(Component)]
 pub struct Speed {

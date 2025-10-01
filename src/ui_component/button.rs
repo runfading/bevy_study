@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 use std::sync::LazyLock;
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct UiButtonPressed {
     pub entity: Entity,
 }
@@ -66,12 +66,12 @@ pub fn create_button_bundle(button: GeneralStruct) -> impl Bundle {
         },
         BackgroundColor(theme.bg_color),
         BorderRadius::all(Val::Px(5.0)),
-        BorderColor(theme.border_color),
+        BorderColor::all(theme.border_color),
         theme,
         children![(
             Text::new(button.label),
             TextColor(text_color),
-            TextFont::from_font(button.font_handler).with_font_size(24.0),
+            TextFont::from(button.font_handler).with_font_size(24.0),
         )],
     )
 }
@@ -121,20 +121,20 @@ pub fn button_system(
             Interaction::Pressed => {
                 *background_color = BackgroundColor(theme.pressed_bg_color);
                 *text_color = TextColor(theme.pressed_text_color);
-                *border_color = BorderColor(theme.pressed_border_color);
+                *border_color = BorderColor::all(theme.pressed_border_color);
                 button_pressed_event.write(UiButtonPressed { entity });
                 info!("Button pressed: {:?}", text);
             }
             Interaction::Hovered => {
                 *background_color = BackgroundColor(theme.hover_bg_color);
                 *text_color = TextColor(theme.hover_text_color);
-                *border_color = BorderColor(theme.hover_border_color);
+                *border_color = BorderColor::all(theme.hover_border_color);
                 info!("Button hover: {:?}", text);
             }
             Interaction::None => {
                 *background_color = BackgroundColor(theme.bg_color);
                 *text_color = TextColor(theme.text_color);
-                *border_color = BorderColor(theme.border_color);
+                *border_color = BorderColor::all(theme.border_color);
             }
         }
     }

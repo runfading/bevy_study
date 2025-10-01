@@ -1,4 +1,3 @@
-use crate::asset_loader::FontAssets;
 use crate::ui_component::button::DEFAULT_BUTTON_THEME;
 use crate::ui_component::{
     button::{spawn_button_bundle, ButtonCallbacks, GeneralStruct},
@@ -6,6 +5,7 @@ use crate::ui_component::{
 };
 use crate::GameState;
 use bevy::prelude::*;
+use crate::assets::FontAssets;
 
 #[derive(Component)]
 pub struct MainMenu;

@@ -1,0 +1,40 @@
+{
+    "image_name":"mario_bros",
+    "image_frames":{
+        "right_small_normal_idle":[
+            {"x":178, "y": 32, "width":12, "height":16}
+        ],
+        "right_small_normal_walk":[
+            {"x": 80, "y": 32, "width":15, "height":16},
+            {"x": 96, "y": 32, "width":16, "height":16},
+            {"x":112, "y": 32, "width":16, "height":16}
+        ],
+        "right_small_normal_run":[
+            {"x": 80, "y": 32, "width":15, "height":16},
+            {"x": 96, "y": 32, "width":16, "height":16},
+            {"x":112, "y": 32, "width":16, "height":16}
+        ],
+        "right_small_normal_jump":[
+            {"x":144, "y": 32, "width":16, "height":16}
+        ],
+        "right_small_normal_stop":[
+            {"x":130, "y": 32, "width":14, "height":16}
+        ],
+        "right_small_normal_die":[
+            {"x":160, "y": 32, "width":15, "height":16}
+        ],
+        "right_small_normal_squat":[
+            {"x":161, "y": 32, "width":14, "height":16}
+        ]
+    },
+    "speed":{
+        "max_walk_speed":6,
+        "max_run_speed":12,
+        "max_y_velocity":11,
+        "walk_accel":0.15,
+        "run_accel":0.3,
+        "turn_accel": 0.35,
+        "jump_velocity":-10.5
+    }
+
+}
