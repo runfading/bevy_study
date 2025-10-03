@@ -11,10 +11,7 @@ pub struct MenuPlugin;
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::MainMenu), spawn_main_menu)
-            .add_systems(
-                OnExit(GameState::MainMenu),
-                menu::despawn_main_menu,
-            )
+            .add_systems(OnExit(GameState::MainMenu), menu::despawn_main_menu)
             .add_systems(
                 Update,
                 menu::handle_esc_key.run_if(in_state(GameState::InGame)),

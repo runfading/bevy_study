@@ -1,10 +1,10 @@
+use crate::assets::AssetLoaderPlugin;
 use crate::camera::CameraPlugin;
 use crate::game::GamePlugin;
 use crate::menu::MenuPlugin;
 use crate::ui_component::{ButtonPlugins, UiTheme};
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
-use crate::assets::AssetLoaderPlugin;
 
 mod assets;
 mod camera;
@@ -16,7 +16,7 @@ fn main() {
     let ui_theme = UiTheme::default();
 
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .insert_resource(ui_theme.clone())
         .init_state::<GameState>()
         .insert_resource(ClearColor(ui_theme.bg_color))

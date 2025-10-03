@@ -30,7 +30,7 @@ struct MissileAction {
 /// 包含攻击模组和导弹模组的实体，可以发射导弹进行攻击
 fn missile_attack(
     mut commands: Commands,
-    mut query: Query<(&Transform, &Missile), (With<AttackAction>, With<Missile>)>,
+    query: Query<(&Transform, &Missile), (With<AttackAction>, With<Missile>)>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::KeyQ) {

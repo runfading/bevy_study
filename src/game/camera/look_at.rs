@@ -1,9 +1,9 @@
-use crate::game::entity_lifecycle::Mario;
+use crate::game::player::Player;
 use bevy::prelude::*;
 
 pub(super) fn camera_follow_ball(
-    mut camera_query: Query<&mut Transform, (With<Camera3d>, Without<Mario>)>,
-    mut ball_transforms: Query<&Transform, With<Mario>>,
+    mut camera_query: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
+    mut ball_transforms: Query<&Transform, With<Player>>,
     time: Res<Time>,
 ) {
     let _delta = time.delta_secs();
@@ -30,8 +30,8 @@ pub(super) fn camera_follow_ball(
     // let new_x = camera_position.x.lerp(target_position.x, delta);
     // let new_y = camera_position.y.lerp(target_position.y, delta);
     let new_x = target_position.x;
-    let new_z = target_position.z;
+    let new_y = target_position.y;
 
-    camera.translation = Vec3::new(new_x, camera_position.y, new_z);
-    *camera = camera.looking_at(target_position, Vec3::Z);
+    camera.translation = Vec3::new(new_x, new_y, camera_position.z);
+    *camera = camera.looking_at(target_position, Vec3::Y);
 }

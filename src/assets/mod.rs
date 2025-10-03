@@ -4,11 +4,11 @@ use bevy::asset::{AssetServer, Handle, LoadState};
 use bevy::image::{Image, TextureAtlasLayout};
 use bevy::log::{error, info};
 use bevy::prelude::{
-    in_state, Font, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Resource, Startup,
+    in_state, Font, IntoScheduleConfigs, NextState, Plugin, Res, ResMut, Resource,
 };
 use std::collections::HashMap;
 
-pub mod mario_animations;
+pub mod player_animations;
 
 #[derive(Resource, Debug, Default)]
 pub struct AssetsLoading {
@@ -39,7 +39,6 @@ pub struct AnimationData {
     pub layout: Handle<TextureAtlasLayout>,
     pub first_index: usize,
     pub last_index: usize,
-    pub fps: u8,
 }
 
 impl AnimationsResource {
@@ -64,7 +63,7 @@ impl Plugin for AssetLoaderPlugin {
             .init_resource::<AssetsLoading>()
             .add_systems(
                 PreStartup,
-                (load_assets, mario_animations::load_mario_animations),
+                (load_assets, player_animations::load_mario_animations),
             )
             .add_systems(
                 Update,

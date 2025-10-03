@@ -39,11 +39,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             maximum_distance: 1.6,
             ..default()
         }
-            .build(),
+        .build(),
     ));
-    commands.spawn(SceneRoot(asset_server.load(
-        GltfAssetLabel::Scene(0).from_asset("models/Missiles.glb"),
-    )));
+    commands.spawn(SceneRoot(
+        asset_server.load(GltfAssetLabel::Scene(0).from_asset("models/Missiles.glb")),
+    ));
 }
 
 fn animate_light_direction(

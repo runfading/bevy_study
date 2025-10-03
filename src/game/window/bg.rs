@@ -24,7 +24,7 @@ pub(super) fn setup_game_background(
     }
 
     let num_stars = 100;
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
     for _ in 0..num_stars {
         let x = rng.random_range(-75.0..75.0);
@@ -38,11 +38,12 @@ pub(super) fn setup_game_background(
         commands.spawn((
             Mesh3d(meshes.add(Circle::new(size))),
             MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::hsl(0.0, 0.0, rng.gen_range(0.7..1.0)),
+                base_color: Color::hsl(0.0, 0.0, rng.random_range(0.7..1.0)),
                 emissive: LinearRgba::WHITE,
                 ..Default::default()
             })),
-            Transform::from_xyz(x, y, z).with_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
+            Transform::from_xyz(x, y, z)
+                .with_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
             Star,
             StarDrift { velocity: drift },
         ));

@@ -102,7 +102,7 @@ pub fn button_system(
         (Changed<Interaction>, With<Button>),
     >,
     theme: Option<Res<UiTheme>>,
-    mut button_pressed_event: EventWriter<UiButtonPressed>,
+    mut button_pressed_event: MessageWriter<UiButtonPressed>,
     mut text_query: Query<&mut Text>,
     mut color_query: Query<&mut TextColor>,
 ) {
@@ -141,7 +141,7 @@ pub fn button_system(
 }
 
 pub fn handle_button_clicks(
-    mut events: EventReader<UiButtonPressed>,
+    mut events: MessageReader<UiButtonPressed>,
     mut callbacks: ResMut<ButtonCallbacks>,
     mut commands: Commands,
 ) {
