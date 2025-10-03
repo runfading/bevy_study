@@ -1,13 +1,14 @@
+use crate::animation::AnimationTimer;
 use crate::configs::{NUM_WORLD_DECORATIONS, SPRITE_SCALE_FACTOR, WORLD_HEIGHT, WORLD_WIDTH};
 use crate::gun::{Gun, GunTimer};
-use crate::player::Player;
+use crate::player::{Player, PlayerState};
 use crate::resources::GlobalTextureAtlas;
 use crate::state::GameState;
 use bevy::app::App;
 use bevy::image::TextureAtlas;
 use bevy::math::{vec3, Vec3};
-use bevy::prelude::{Commands, OnEnter, Plugin, Res, Sprite, Transform};
-use bevy::time::Stopwatch;
+use bevy::prelude::{Commands, OnEnter, Plugin, Res, Sprite, TimerMode, Transform};
+use bevy::time::{Stopwatch, Timer};
 use rand::Rng;
 
 pub struct WorldPlugin;
@@ -24,6 +25,7 @@ impl Plugin for WorldPlugin {
 fn init_word(mut commands: Commands, handle: Res<GlobalTextureAtlas>) {
     commands.spawn((
         Player,
+        AnimationTimer(Timer::from_seconds(0.2, TimerMode::Repeating)),
         Sprite::from_atlas_image(
             handle.image.clone().unwrap(),
             TextureAtlas {
@@ -32,6 +34,7 @@ fn init_word(mut commands: Commands, handle: Res<GlobalTextureAtlas>) {
             },
         ),
         Transform::from_translation(vec3(0., 0., 10.)).with_scale(Vec3::splat(SPRITE_SCALE_FACTOR)),
+        PlayerState::Idle,
     ));
 
     commands.spawn((

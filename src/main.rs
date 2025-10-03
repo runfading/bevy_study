@@ -6,6 +6,7 @@ use test_bevy_ui::player::PlayerPlugin;
 use test_bevy_ui::state::GameState;
 use test_bevy_ui::world::WorldPlugin;
 use test_bevy_ui::{ResourcesPlugin, BG_COLOR, WINDOW_HEIGHT, WINDOW_WIDTH};
+use test_bevy_ui::enemy::EnemyPlugin;
 
 fn main() {
     App::new()
@@ -30,8 +31,10 @@ fn main() {
         .add_plugins(FrameTimeDiagnosticsPlugin::default())
         .add_plugins(FollowCameraPlugin)
         .add_plugins(GunPlugin)
+        .add_plugins(test_bevy_ui::animation::AnimationPlugin)
         .add_plugins(PlayerPlugin)
         .add_plugins(ResourcesPlugin)
         .add_plugins(WorldPlugin)
+        .add_plugins(EnemyPlugin)
         .run();
 }

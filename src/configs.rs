@@ -26,6 +26,7 @@ pub const SPAWN_RATE_PER_SECOND: usize = 500;
 pub const ENEMY_HEALTH: f32 = 100.0;
 pub const ENEMY_SPAWN_INTERVAL: f32 = 1.0;
 pub const ENEMY_SPEED: f32 = 1.0;
+pub const ENEMY_BASE_INDEX: [usize; 4] = [8, 12, 20, 28];
 
 // Kd-tree
 pub const KD_TREE_REFRESH_RATE: f32 = 0.1;
