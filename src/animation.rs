@@ -58,7 +58,7 @@ fn animate_enemy(mut enemy_query: Query<(&Enemy, &mut Sprite, &AnimationTimer), 
         .for_each(|(enemy, mut sprite, timer)| {
             if timer.0.just_finished() {
                 if let Some(texture_atlas) = sprite.texture_atlas.as_mut() {
-                    texture_atlas.index = enemy.0 + (texture_atlas.index + 1) % 4;
+                    texture_atlas.index = enemy.index + (texture_atlas.index + 1) % 4;
                 }
             }
         });

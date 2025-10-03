@@ -1,6 +1,6 @@
 // Window
-pub const WINDOW_WIDTH: f32 = 1200.0;
-pub const WINDOW_HEIGHT: f32 = 900.0;
+pub const WINDOW_WIDTH: f32 = 720.0;
+pub const WINDOW_HEIGHT: f32 = 360.0;
 
 // Sprites
 pub const SPRITE_SHEET_PATH: &str = "assets.png";

@@ -2,8 +2,11 @@ use crate::configs::{BULLET_SPAWN_INTERVAL, BULLET_SPEED, SPRITE_SCALE_FACTOR};
 use crate::player::Player;
 use crate::resources::{CursorPosition, GlobalTextureAtlas};
 use crate::state::GameState;
+use crate::{BULLET_TIME_SECS, NUM_BULLETS_PER_SHOT};
 use bevy::prelude::*;
 use bevy::time::Stopwatch;
+use rand::{rng, Rng};
+use std::time::Instant;
 
 pub struct GunPlugin;
 
@@ -13,18 +16,36 @@ pub struct Gun;
 pub struct GunTimer(pub Stopwatch);
 #[derive(Component)]
 pub struct Bullet;
+#[derive(Component)]
+pub struct SpawnInstant(Instant);
 
 #[derive(Component)]
-struct BulletDirection(Dir3);
+struct BulletDirection(Vec3);
 
 impl Plugin for GunPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (handle_gun_input, update_gun_transform, update_bullets)
+            (
+                handle_gun_input,
+                update_gun_transform,
+                update_bullets,
+                handle_bullet_expire,
+            )
                 .run_if(in_state(GameState::GameInit)),
         );
     }
+}
+
+fn handle_bullet_expire(
+    mut commands: Commands,
+    mut bullet_query: Query<(Entity, &SpawnInstant), With<Bullet>>,
+) {
+    bullet_query.iter_mut().for_each(|(entity, spawn_instant)| {
+        if spawn_instant.0.elapsed().as_secs_f32() > BULLET_TIME_SECS {
+            commands.entity(entity).despawn();
+        }
+    })
 }
 
 /// 鼠标左键发射子弹
@@ -47,22 +68,34 @@ fn handle_gun_input(
         };
 
     gun_timer.0.tick(time.delta());
+
+    let mut rng = rand::rng();
+    let bullet_direction = gun_transform.local_x();
     if gun_timer.0.elapsed_secs() >= BULLET_SPAWN_INTERVAL {
         gun_timer.0.reset();
 
-        commands.spawn((
-            Bullet,
-            BulletDirection(gun_transform.local_x()),
-            Transform::from_translation(vec3(gun_pos.x, gun_pos.y, 0.))
-                .with_scale(Vec3::splat(SPRITE_SCALE_FACTOR)),
-            Sprite::from_atlas_image(
-                handle.image.clone().unwrap(),
-                TextureAtlas {
-                    layout: handle.layout.clone().unwrap(),
-                    index: 16,
-                },
-            ),
-        ));
+        for _ in 0..NUM_BULLETS_PER_SHOT {
+            let dir = vec3(
+                bullet_direction.x + rng.random_range(-0.5..0.5),
+                bullet_direction.y + rng.random_range(-0.5..0.5),
+                bullet_direction.z,
+            );
+
+            commands.spawn((
+                Bullet,
+                SpawnInstant(Instant::now()),
+                BulletDirection(dir),
+                Transform::from_translation(vec3(gun_pos.x, gun_pos.y, 0.))
+                    .with_scale(Vec3::splat(SPRITE_SCALE_FACTOR)),
+                Sprite::from_atlas_image(
+                    handle.image.clone().unwrap(),
+                    TextureAtlas {
+                        layout: handle.layout.clone().unwrap(),
+                        index: 16,
+                    },
+                ),
+            ));
+        }
     }
 }
 
