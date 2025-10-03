@@ -66,7 +66,7 @@ fn animate_enemy(mut enemy_query: Query<(&Enemy, &mut Sprite, &AnimationTimer), 
 
 fn flip_enemy_sprite_x(
     mut enemy_query: Query<(&mut Sprite, &Transform), With<Enemy>>,
-    mut player_query: Query<&Transform, With<Player>>,
+    player_query: Query<&Transform, With<Player>>,
 ) {
     let player_pos = if let Ok(player_transform) = player_query.single() {
         player_transform.translation

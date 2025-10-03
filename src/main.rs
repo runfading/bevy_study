@@ -8,6 +8,7 @@ use test_bevy_ui::world::WorldPlugin;
 use test_bevy_ui::{ResourcesPlugin, BG_COLOR, WINDOW_HEIGHT, WINDOW_WIDTH};
 use test_bevy_ui::collision::CollisionPlugin;
 use test_bevy_ui::enemy::EnemyPlugin;
+use test_bevy_ui::gui::GuiPlugin;
 
 fn main() {
     App::new()
@@ -36,6 +37,7 @@ fn main() {
         .add_plugins(PlayerPlugin)
         .add_plugins(CollisionPlugin)
         .add_plugins(ResourcesPlugin)
+        .add_plugins(GuiPlugin)
         .add_plugins(WorldPlugin)
         .add_plugins(EnemyPlugin)
         .run();
