@@ -5,7 +5,7 @@ use crate::state::GameState;
 use crate::{BULLET_TIME_SECS, NUM_BULLETS_PER_SHOT};
 use bevy::prelude::*;
 use bevy::time::Stopwatch;
-use rand::{rng, Rng};
+use rand::Rng;
 use std::time::Instant;
 
 pub struct GunPlugin;
@@ -32,7 +32,7 @@ impl Plugin for GunPlugin {
                 update_bullets,
                 handle_bullet_expire,
             )
-                .run_if(in_state(GameState::GameInit)),
+                .run_if(in_state(GameState::InGame)),
         );
     }
 }

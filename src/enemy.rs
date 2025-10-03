@@ -1,6 +1,7 @@
 use crate::animation::AnimationTimer;
 use crate::player::Player;
 use crate::state::GameState;
+use crate::world::GameEntity;
 use crate::{
     GlobalTextureAtlas, ENEMY_BASE_INDEX, ENEMY_SPAWN_INTERVAL, ENEMY_SPEED, MAX_NUM_ENEMIES,
     SPRITE_SCALE_FACTOR,
@@ -8,7 +9,6 @@ use crate::{
 use bevy::prelude::*;
 use bevy::time::common_conditions::on_timer;
 use rand::prelude::IndexedRandom;
-use rand::prelude::IteratorRandom;
 use rand::Rng;
 use std::f32::consts::PI;
 use std::time::Duration;
@@ -39,7 +39,7 @@ impl Plugin for EnemyPlugin {
                 update_enemy_transform,
                 despawn_enemy,
             )
-                .run_if(in_state(GameState::GameInit)),
+                .run_if(in_state(GameState::InGame)),
         );
     }
 }
@@ -53,7 +53,7 @@ fn despawn_enemy(mut commands: Commands, enemy_query: Query<(Entity, &Enemy), Wi
 }
 
 fn update_enemy_transform(
-    player_query: Query<&Transform, (With<Player>)>,
+    player_query: Query<&Transform, With<Player>>,
     mut enemy_query: Query<&mut Transform, (With<Enemy>, Without<Player>)>,
 ) {
     let player_transform = if let Ok(transform) = player_query.single() {
@@ -77,7 +77,7 @@ fn spawn_enemies(
     player_query: Query<&Transform, With<Player>>,
 ) {
     let num_enemies = enemy_query.iter().len();
-    let enemy_spawn_count = (MAX_NUM_ENEMIES - num_enemies).min(10);
+    let enemy_spawn_count = (MAX_NUM_ENEMIES - num_enemies).min(100);
 
     if num_enemies >= MAX_NUM_ENEMIES {
         return;
@@ -107,6 +107,7 @@ fn spawn_enemies(
                     index,
                 },
             ),
+            GameEntity,
         ));
     }
 }

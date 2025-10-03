@@ -21,7 +21,7 @@ impl Plugin for ResourcesPlugin {
             .add_systems(OnEnter(GameState::Loading), load_assets)
             .add_systems(
                 Update,
-                (update_cursor_position,).run_if(in_state(GameState::GameInit)),
+                (update_cursor_position,).run_if(in_state(GameState::InGame)),
             );
     }
 }
@@ -42,7 +42,7 @@ fn load_assets(
     );
     handle.layout = Some(texture_atlas_layout.add(layout));
 
-    game_state.set(GameState::GameInit);
+    game_state.set(GameState::MainMenu);
 }
 
 fn update_cursor_position(
